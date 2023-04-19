@@ -4,7 +4,7 @@ Simple dynamic array implementation for the C programming language.
 
 ## Quick Start
 
-Copy file_utils.h into your project and include it like this:
+Copy dynamic_array.h into your project and include it like this:
 
 ``` c
 #define DYNAMIC_ARRAY_IMPLEMENTATION
