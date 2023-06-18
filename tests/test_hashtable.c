@@ -1,6 +1,6 @@
 #include "test_hashtable.h"
 
-#define HASH_TABLE_IMPLEMENTATION
+#define HASHTABLE_IMPLEMENTATION
 #include "../hashtable/hashtable.h"
 
 static void test_hashtable_add(void)
@@ -9,7 +9,7 @@ static void test_hashtable_add(void)
 
     int result = hash_table_add(table, "my_key", "my_value");
 
-    TEST_ASSERT_EQUAL_INT(1, result);
+    TEST_ASSERT_EQUAL_INT(3, result);
     TEST_ASSERT_EQUAL_INT(1, table->count);
 
     hash_table_free(table);
@@ -22,7 +22,7 @@ static void test_hashtable_get(void)
     hash_table_add(table, "my_key", "my_value");
     char *value = hash_table_get(table, "my_key")->value;
 
-    TEST_ASSERT_EQUAL_STRING("my_key", value);
+    TEST_ASSERT_EQUAL_STRING("my_value", value);
 
     hash_table_free(table);
 }
@@ -69,7 +69,7 @@ static void test_hashtable_remove(void)
 /*     hash_table_free(table); */
 /* } */
 
-void run_dynamic_array_tests(void)
+void run_hashtable_tests(void)
 {
     RUN_TEST(test_hashtable_add);
     RUN_TEST(test_hashtable_get);

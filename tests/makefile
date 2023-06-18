@@ -1,5 +1,5 @@
-CC := clang
-CFLAGS := -Wall -Wextra -pedantic -ggdb
+CC := gcc
+CFLAGS := -Wall -Wextra -pedantic -ggdb -DUNITY_OUTPUT_COLOR
 LDFLAGS :=
 EXE := prog
 

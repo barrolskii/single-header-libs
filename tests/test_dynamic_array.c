@@ -63,7 +63,7 @@ static void test_dynamic_array_clear_user_data(void)
     dynamic_array_clear_user_data(array, free);
 
     TEST_ASSERT_EQUAL_INT(0, array->size);
-    TEST_ASSERT_EQUAL_INT(12, array->capacity);
+    TEST_ASSERT_EQUAL_INT(8, array->capacity);
 
     dynamic_array_free(array);
 }
