@@ -28,8 +28,8 @@ hash_table_t *hash_table_init();
 void hash_table_free(hash_table_t *table);
 
 int hash_table_add(hash_table_t *table, char *key, void *value);
-hash_item_t *hash_table_get(hash_table_t *table, char *key);
-hash_item_t *hash_table_set(hash_table_t *table, char *key, void *value);
+void *hash_table_get(hash_table_t *table, char *key);
+void *hash_table_set(hash_table_t *table, char *key, void *value);
 void hash_table_remove(hash_table_t *table, char *key);
 
 void hash_table_free_item(hash_table_t *table, char *key, void (*free_func)(void *));
@@ -42,7 +42,7 @@ void hash_table_clear_user_data(hash_table_t *table, void (*free_func)(void *));
 static hash_item_t *new_item(char *key, void *value)
 {
     hash_item_t *item = calloc(1, sizeof(hash_item_t));
-    memccpy(item->key, key, 0, KEY_LENGTH);
+    strncpy(item->key, key, KEY_LENGTH);
     item->value = value;
 
     return item;
@@ -83,6 +83,21 @@ static void grow_table(hash_table_t *table, size_t size)
 
     table->items = items;
     table->capacity = size;
+}
+
+static hash_item_t *get_item(hash_table_t *table, char *key)
+{
+    uint64_t index = fnv1a_hash(key, table->capacity);
+
+    while (table->items[index] != NULL)
+    {
+        if (strcmp(table->items[index]->key, key) == 0)
+            return table->items[index];
+
+        index = (index + 1) & (table->capacity - 1);
+    }
+
+    return NULL;
 }
 
 hash_table_t *hash_table_init()
@@ -137,38 +152,30 @@ int hash_table_add(hash_table_t *table, char *key, void *value)
     return index;
 }
 
-hash_item_t *hash_table_get(hash_table_t *table, char *key)
+void *hash_table_get(hash_table_t *table, char *key)
 {
-    uint64_t index = fnv1a_hash(key, table->capacity);
-
-    if (!table->items[index])
-        return NULL;
-
-    while (table->items[index] != NULL)
-    {
-        if (strcmp(table->items[index]->key, key) == 0)
-            return table->items[index];
-
-        index = (index + 1) & (table->capacity - 1);
-    }
-
-    return NULL;
-}
-
-hash_item_t *hash_table_set(hash_table_t *table, char *key, void *value)
-{
-    hash_item_t *item = hash_table_get(table, key);
+    hash_item_t *item = get_item(table, key);
 
     if (!item)
-        return item;
+        return NULL;
+
+    return item->value;
+}
+
+void *hash_table_set(hash_table_t *table, char *key, void *value)
+{
+    hash_item_t *item = get_item(table, key);
+
+    if (!item)
+        return NULL;
 
     item->value = value;
-    return item;
+    return item->value;
 }
 
 void hash_table_remove(hash_table_t *table, char *key)
 {
-    hash_item_t *item = hash_table_get(table, key);
+    hash_item_t *item = get_item(table, key);
 
     if (!item)
         return;
@@ -180,7 +187,7 @@ void hash_table_remove(hash_table_t *table, char *key)
 
 void hash_table_free_item(hash_table_t *table, char *key, void (*free_func)(void *))
 {
-    hash_item_t *item = hash_table_get(table, key);
+    hash_item_t *item = get_item(table, key);
 
     if (!item)
         return;

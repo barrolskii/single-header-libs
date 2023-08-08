@@ -20,7 +20,7 @@ static void test_hashtable_get(void)
     hash_table_t *table = hash_table_init();
 
     hash_table_add(table, "my_key", "my_value");
-    char *value = hash_table_get(table, "my_key")->value;
+    char *value = hash_table_get(table, "my_key");
 
     TEST_ASSERT_EQUAL_STRING("my_value", value);
 
@@ -32,7 +32,7 @@ static void test_hashtable_set(void)
     hash_table_t *table = hash_table_init();
 
     hash_table_add(table, "my_key", "my_value");
-    char *value = hash_table_set(table, "my_key", "my_new_value")->value;
+    char *value = hash_table_set(table, "my_key", "my_new_value");
 
     TEST_ASSERT_EQUAL_STRING("my_new_value", value);
 
